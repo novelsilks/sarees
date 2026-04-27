@@ -1,0 +1,11 @@
+.env
+node_modules/
+dist/
+*.mp4
+WhatsApp Image *.jpeg
+865d6372-2be4-495a-b390-e6a02a21dd0e.png
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
