@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novel Silks Product Admin</title>
+    <style>
+      :root {
+        font-family: Arial, sans-serif;
+        color: #342017;
+        background: #fffaf5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 28px 0 48px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        color: #7d2233;
+      }
+
+      h1 {
+        font-size: clamp(1.7rem, 4vw, 2.6rem);
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 11px 16px;
+        background: #8f2032;
+        color: #fffaf5;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      button.secondary {
+        background: #fff;
+        color: #7d2233;
+        border: 1px solid #e4cdb6;
+      }
+
+      button.danger {
+        background: #4a171f;
+      }
+
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .panel {
+        background: #fff;
+        border: 1px solid #ead7c2;
+        border-radius: 18px;
+        box-shadow: 0 18px 44px rgba(93, 54, 26, 0.08);
+        padding: 22px;
+      }
+
+      .login {
+        max-width: 460px;
+        margin: 12vh auto;
+        display: grid;
+        gap: 14px;
+      }
+
+      .toolbar,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 0.95fr 1.3fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .product-list {
+        display: grid;
+        gap: 10px;
+        max-height: 78vh;
+        overflow: auto;
+        padding-right: 4px;
+      }
+
+      .product-row {
+        display: grid;
+        grid-template-columns: 68px 1fr;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        text-align: left;
+        border-radius: 14px;
+        border: 1px solid #ead7c2;
+        background: #fffdf9;
+        color: #342017;
+        padding: 9px;
+      }
+
+      .product-row.active {
+        outline: 2px solid rgba(143, 32, 50, 0.24);
+      }
+
+      .product-row img {
+        width: 68px;
+        height: 78px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #f7eadb;
+      }
+
+      .product-row strong,
+      .product-row span {
+        display: block;
+      }
+
+      .product-row span {
+        color: #76594b;
+        margin-top: 4px;
+        font-size: 0.92rem;
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 7px;
+        font-weight: 700;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid #e1c9b0;
+        border-radius: 12px;
+        padding: 12px 13px;
+        color: #342017;
+        background: #fffdf9;
+      }
+
+      textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      .two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .image-tools {
+        display: grid;
+        gap: 10px;
+      }
+
+      .gallery-tools {
+        display: grid;
+        gap: 10px;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .preview {
+        width: 110px;
+        height: 132px;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #f7eadb;
+        border: 1px solid #ead7c2;
+      }
+
+      .gallery-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+      }
+
+      .gallery-item {
+        display: grid;
+        gap: 8px;
+        border: 1px solid #ead7c2;
+        border-radius: 12px;
+        background: #fffdf9;
+        padding: 8px;
+      }
+
+      .gallery-item img {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        border-radius: 9px;
+        background: #f7eadb;
+      }
+
+      .gallery-item span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #76594b;
+        font-size: 0.82rem;
+      }
+
+      .status {
+        margin: 0;
+        color: #76594b;
+        line-height: 1.55;
+      }
+
+      .status.error {
+        color: #8f2032;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 860px) {
+        header,
+        .grid,
+        .two {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          display: grid;
+        }
+
+        .product-list {
+          max-height: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel login" id="loginPanel">
+        <h1>Product Admin</h1>
+        <p class="status">Enter the admin password to add, edit, upload images, or delete products.</p>
+        <input id="passwordInput" type="password" placeholder="Admin password" autocomplete="current-password" />
+        <button id="loginButton" type="button">Open Product Manager</button>
+        <p class="status error" id="loginStatus"></p>
+      </section>
+
+      <section id="adminPanel" class="hidden">
+        <header>
+          <div>
+            <h1>Novel Silks Product Manager</h1>
+            <p class="status">Changes save to the website catalogue immediately after pressing Save Product.</p>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="secondary" id="newButton">New Product</button>
+            <button type="button" class="secondary" id="refreshButton">Refresh</button>
+            <a href="/" class="status">View website</a>
+          </div>
+        </header>
+
+        <div class="grid">
+          <aside class="panel">
+            <h2>Products</h2>
+            <p class="status" id="listStatus"></p>
+            <div class="product-list" id="productList"></div>
+          </aside>
+
+          <section class="panel">
+            <h2 id="formTitle">New Product</h2>
+            <form id="productForm">
+              <input type="hidden" id="productId" />
+              <div class="two">
+                <label>
+                  Product Name
+                  <input id="name" required />
+                </label>
+                <label>
+                  Price
+                  <input id="price" required placeholder="Rs. 1,650" />
+                </label>
+              </div>
+              <div class="two">
+                <label>
+                  Stock Available
+                  <input id="stock" type="number" min="0" step="1" required />
+                </label>
+                <label>
+                  Category
+                  <select id="category">
+                    <option value="kanjivaram">Bridal Kancheepuram</option>
+                    <option value="banarasi">Other Kancheepuram</option>
+                    <option value="soft-silk">Kanchi Cotton</option>
+                    <option value="organza">Others Fabrics</option>
+                  </select>
+                </label>
+              </div>
+              <div class="two">
+                <label>
+                  Tag
+                  <input id="tag" placeholder="Bridal Statement" />
+                </label>
+                <span></span>
+              </div>
+              <label>
+                Description
+                <textarea id="description"></textarea>
+              </label>
+              <label>
+                Search Terms
+                <input id="searchTerms" placeholder="silk saree, bridal saree, kanchipuram" />
+              </label>
+              <div class="two">
+                <label>
+                  Main Image Path
+                  <input id="image" placeholder="/products/example.jpeg" />
+                </label>
+                <div class="image-tools">
+                  <img class="preview" id="preview" alt="" />
+                  <input id="imageUpload" type="file" accept="image/*" />
+                  <div class="button-row">
+                    <button type="button" class="secondary" id="uploadButton">Upload Main Image</button>
+                    <button type="button" class="danger" id="removeImageButton">Remove Main Image</button>
+                  </div>
+                </div>
+              </div>
+              <label>
+                Gallery Images
+                <textarea id="gallery" class="hidden" placeholder="/products/image-1.jpeg&#10;/products/image-2.jpeg"></textarea>
+              </label>
+              <div class="gallery-tools">
+                <div class="gallery-list" id="galleryList"></div>
+                <label>
+                  Add Gallery Image Path
+                  <input id="galleryImagePath" placeholder="/products/gallery-image.jpeg" />
+                </label>
+                <div class="button-row">
+                  <button type="button" class="secondary" id="addGalleryImageButton">Add Gallery Image</button>
+                </div>
+                <label>
+                  Upload Gallery Image
+                  <input id="galleryImageUpload" type="file" accept="image/*" />
+                </label>
+                <div class="button-row">
+                  <button type="button" class="secondary" id="uploadGalleryImageButton">Upload To Gallery</button>
+                </div>
+              </div>
+              <div class="actions">
+                <button type="submit" id="saveButton">Save Product</button>
+                <button type="button" class="danger" id="deleteButton">Delete Product</button>
+              </div>
+              <p class="status" id="formStatus"></p>
+            </form>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const state = {
+        password: '',
+        products: [],
+        selectedId: null,
+      };
+
+      const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const API_BASE_URL = isLocalHost && window.location.port !== '3001' ? 'http://localhost:3001' : isLocalHost ? '' : 'https://sarees-xbnx.onrender.com';
+      const apiUrl = (path) => `${API_BASE_URL}${path}`;
+      const $ = (id) => document.getElementById(id);
+      const authHeaders = () => ({ Authorization: `Bearer ${state.password}` });
+      const emptyProduct = () => ({
+        id: Date.now(),
+        category: 'kanjivaram',
+        name: '',
+        price: '',
+        stock: 2,
+        image: '',
+        tag: '',
+        searchTerms: [],
+        description: '',
+        gallery: [],
+      });
+
+      const setStatus = (element, message, isError = false) => {
+        element.textContent = message;
+        element.classList.toggle('error', isError);
+      };
+
+      const getGalleryImages = () =>
+        $('gallery')
+          .value.split('\n')
+          .map((item) => item.trim())
+          .filter(Boolean);
+
+      const setGalleryImages = (images) => {
+        $('gallery').value = images.join('\n');
+        renderGalleryList();
+      };
+
+      const appendGalleryImage = (imagePath) => {
+        const nextImagePath = String(imagePath || '').trim();
+
+        if (!nextImagePath) {
+          throw new Error('Enter or upload a gallery image first.');
+        }
+
+        const images = getGalleryImages();
+
+        if (!images.includes(nextImagePath)) {
+          images.push(nextImagePath);
+          setGalleryImages(images);
+        }
+      };
+
+      const renderGalleryList = () => {
+        const images = getGalleryImages();
+
+        if (images.length === 0) {
+          $('galleryList').innerHTML = '<p class="status">No gallery images added.</p>';
+          return;
+        }
+
+        $('galleryList').innerHTML = images
+          .map(
+            (image, index) => `
+              <div class="gallery-item">
+                <img src="${image}" alt="">
+                <span title="${image}">${image}</span>
+                <button type="button" class="danger gallery-remove-button" data-index="${index}">
+                  Remove
+                </button>
+              </div>
+            `,
+          )
+          .join('');
+      };
+
+      const readJsonResponse = async (response, fallbackMessage) => {
+        const text = await response.text();
+
+        try {
+          return text ? JSON.parse(text) : {};
+        } catch {
+          const target = new URL(response.url, window.location.href);
+          throw new Error(
+            `${fallbackMessage} The admin API returned a website page instead of JSON. Check that the backend is running and that ${target.origin} is the correct API server.`,
+          );
+        }
+      };
+
+      const getStockValue = (product) => {
+        const stock = Number(product?.stock ?? 2);
+        return Number.isFinite(stock) ? Math.max(0, Math.floor(stock)) : 2;
+      };
+
+      const prepareImageForUpload = (file) =>
+        new Promise((resolve, reject) => {
+          if (!file.type.startsWith('image/')) {
+            reject(new Error('Please choose an image file.'));
+            return;
+          }
+
+          const reader = new FileReader();
+
+          reader.onerror = () => reject(new Error('Unable to read this image.'));
+          reader.onload = () => {
+            const image = new Image();
+
+            image.onerror = () =>
+              reject(new Error('This image format could not be processed. Please use JPG, PNG, or WEBP.'));
+            image.onload = () => {
+              const maxSize = 1800;
+              const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.max(1, Math.round(image.width * scale));
+              canvas.height = Math.max(1, Math.round(image.height * scale));
+
+              const context = canvas.getContext('2d');
+              context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+              resolve(canvas.toDataURL('image/jpeg', 0.86));
+            };
+            image.src = reader.result;
+          };
+
+          reader.readAsDataURL(file);
+        });
+
+      const productFromForm = () => {
+        const image = $('image').value.trim();
+        const gallery = getGalleryImages();
+
+        return {
+          id: Number($('productId').value || Date.now()),
+          category: $('category').value,
+          name: $('name').value.trim(),
+          price: $('price').value.trim(),
+          stock: Math.max(0, Math.floor(Number($('stock').value || 0))),
+          image,
+          tag: $('tag').value.trim(),
+          searchTerms: $('searchTerms')
+            .value.split(',')
+            .map((item) => item.trim())
+            .filter(Boolean),
+          description: $('description').value.trim(),
+          gallery: gallery.length ? gallery : image ? [image] : [],
+        };
+      };
+
+      const fillForm = (product) => {
+        state.selectedId = product.id;
+        $('formTitle').textContent = product.name ? 'Edit Product' : 'New Product';
+        $('productId').value = product.id;
+        $('name').value = product.name || '';
+        $('price').value = product.price || '';
+        $('stock').value = getStockValue(product);
+        $('category').value = product.category || 'kanjivaram';
+        $('tag').value = product.tag || '';
+        $('description').value = product.description || '';
+        $('searchTerms').value = (product.searchTerms || []).join(', ');
+        $('image').value = product.image || '';
+        setGalleryImages(product.gallery || []);
+        $('galleryImagePath').value = '';
+        $('galleryImageUpload').value = '';
+        $('imageUpload').value = '';
+        $('preview').src = product.image || '';
+        $('deleteButton').disabled = !state.products.some((item) => item.id === product.id);
+        renderList();
+      };
+
+      const renderList = () => {
+        $('listStatus').textContent = `${state.products.length} products`;
+        $('productList').innerHTML = state.products
+          .map(
+            (product) => `
+              <button type="button" class="product-row ${product.id === state.selectedId ? 'active' : ''}" data-id="${product.id}">
+                <img src="${product.image || ''}" alt="">
+                <span>
+                  <strong>${product.name || 'Untitled Product'}</strong>
+                  <span>${product.price || 'No price'} | Stock ${getStockValue(product)}</span>
+                </span>
+              </button>
+            `,
+          )
+          .join('');
+      };
+
+      const loadProducts = async () => {
+        setStatus($('listStatus'), 'Loading products...');
+        const response = await fetch(apiUrl('/api/products'), { cache: 'no-store' });
+
+        if (!response.ok) {
+          throw new Error('Unable to load products.');
+        }
+
+        state.products = await readJsonResponse(response, 'Unable to load products.');
+        renderList();
+
+        if (state.products.length && !state.selectedId) {
+          fillForm(state.products[0]);
+        }
+      };
+
+      const openAdmin = async () => {
+        const checkResponse = await fetch(apiUrl('/api/admin/check'), {
+          headers: authHeaders(),
+          cache: 'no-store',
+        });
+        const checkResult = await readJsonResponse(checkResponse, 'Password check failed.');
+
+        if (!checkResponse.ok) {
+          throw new Error(checkResult.error || `Password check failed with status ${checkResponse.status}.`);
+        }
+
+        $('loginPanel').classList.add('hidden');
+        $('adminPanel').classList.remove('hidden');
+        await loadProducts();
+      };
+
+      $('loginButton').addEventListener('click', async () => {
+        state.password = $('passwordInput').value.trim();
+        setStatus($('loginStatus'), '');
+
+        try {
+          await openAdmin();
+          sessionStorage.setItem('novelSilksAdminPassword', state.password);
+        } catch (error) {
+          $('adminPanel').classList.add('hidden');
+          $('loginPanel').classList.remove('hidden');
+          sessionStorage.removeItem('novelSilksAdminPassword');
+          $('passwordInput').value = '';
+          setStatus(
+            $('loginStatus'),
+            `${error.message} Use novelsilks-admin. If it still fails, restart or redeploy the backend so the latest password code is active.`,
+            true,
+          );
+        }
+      });
+
+      $('refreshButton').addEventListener('click', () => {
+        loadProducts().catch((error) => setStatus($('listStatus'), error.message, true));
+      });
+
+      $('newButton').addEventListener('click', () => fillForm(emptyProduct()));
+
+      $('productList').addEventListener('click', (event) => {
+        const row = event.target.closest('.product-row');
+
+        if (!row) {
+          return;
+        }
+
+        const product = state.products.find((item) => item.id === Number(row.dataset.id));
+
+        if (product) {
+          fillForm(product);
+        }
+      });
+
+      $('image').addEventListener('input', () => {
+        $('preview').src = $('image').value.trim();
+      });
+
+      $('removeImageButton').addEventListener('click', () => {
+        $('image').value = '';
+        $('preview').removeAttribute('src');
+        $('imageUpload').value = '';
+        setStatus($('formStatus'), 'Main image removed. Press Save Product to update the catalogue.');
+      });
+
+      $('addGalleryImageButton').addEventListener('click', () => {
+        try {
+          appendGalleryImage($('galleryImagePath').value);
+          $('galleryImagePath').value = '';
+          setStatus($('formStatus'), 'Gallery image added. Press Save Product to update the catalogue.');
+        } catch (error) {
+          setStatus($('formStatus'), error.message, true);
+        }
+      });
+
+      $('galleryList').addEventListener('click', (event) => {
+        const removeButton = event.target.closest('.gallery-remove-button');
+
+        if (!removeButton) {
+          return;
+        }
+
+        const removeIndex = Number(removeButton.dataset.index);
+        const images = getGalleryImages().filter((_image, index) => index !== removeIndex);
+        setGalleryImages(images);
+        setStatus($('formStatus'), 'Gallery image removed. Press Save Product to update the catalogue.');
+      });
+
+      $('uploadButton').addEventListener('click', async () => {
+        const file = $('imageUpload').files[0];
+
+        if (!file) {
+          setStatus($('formStatus'), 'Choose an image first.', true);
+          return;
+        }
+
+        try {
+          setStatus($('formStatus'), 'Preparing image...');
+          const dataUrl = await prepareImageForUpload(file);
+          setStatus($('formStatus'), 'Uploading image...');
+          const response = await fetch(apiUrl('/api/admin/upload-image'), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders(),
+            },
+            body: JSON.stringify({
+              fileName: file.name,
+              dataUrl,
+            }),
+          });
+          const result = await readJsonResponse(response, 'Upload failed.');
+
+          if (!response.ok) {
+            throw new Error(result.error || 'Upload failed.');
+          }
+
+          $('image').value = result.imagePath;
+          $('preview').src = result.imagePath;
+          setStatus($('formStatus'), 'Main image uploaded. Press Save Product to update the catalogue.');
+        } catch (error) {
+          setStatus($('formStatus'), error.message, true);
+        }
+      });
+
+      $('uploadGalleryImageButton').addEventListener('click', async () => {
+        const file = $('galleryImageUpload').files[0];
+
+        if (!file) {
+          setStatus($('formStatus'), 'Choose a gallery image first.', true);
+          return;
+        }
+
+        try {
+          setStatus($('formStatus'), 'Preparing gallery image...');
+          const dataUrl = await prepareImageForUpload(file);
+          setStatus($('formStatus'), 'Uploading gallery image...');
+          const response = await fetch(apiUrl('/api/admin/upload-image'), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders(),
+            },
+            body: JSON.stringify({
+              fileName: file.name,
+              dataUrl,
+            }),
+          });
+          const result = await readJsonResponse(response, 'Gallery upload failed.');
+
+          if (!response.ok) {
+            throw new Error(result.error || 'Gallery upload failed.');
+          }
+
+          appendGalleryImage(result.imagePath);
+          $('galleryImageUpload').value = '';
+          setStatus($('formStatus'), 'Gallery image uploaded. Press Save Product to update the catalogue.');
+        } catch (error) {
+          setStatus($('formStatus'), error.message, true);
+        }
+      });
+
+      $('productForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        try {
+          const product = productFromForm();
+          setStatus($('formStatus'), 'Saving product...');
+          const response = await fetch(apiUrl(`/api/admin/products/${product.id}`), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders(),
+            },
+            body: JSON.stringify(product),
+          });
+          const result = await readJsonResponse(response, 'Save failed.');
+
+          if (!response.ok) {
+            throw new Error(result.error || 'Save failed.');
+          }
+
+          state.products = result.products;
+          fillForm(result.product);
+          setStatus($('formStatus'), `Saved with stock ${getStockValue(result.product)}. Refresh the website to see the update.`);
+        } catch (error) {
+          setStatus($('formStatus'), error.message, true);
+        }
+      });
+
+      $('deleteButton').addEventListener('click', async () => {
+        const product = productFromForm();
+
+        if (!window.confirm(`Delete "${product.name}"?`)) {
+          return;
+        }
+
+        try {
+          const response = await fetch(apiUrl(`/api/admin/products/${product.id}`), {
+            method: 'DELETE',
+            headers: authHeaders(),
+          });
+          const result = await readJsonResponse(response, 'Delete failed.');
+
+          if (!response.ok) {
+            throw new Error(result.error || 'Delete failed.');
+          }
+
+          state.products = result.products;
+          fillForm(state.products[0] || emptyProduct());
+          setStatus($('formStatus'), 'Product deleted.');
+        } catch (error) {
+          setStatus($('formStatus'), error.message, true);
+        }
+      });
+
+      const sessionPassword = sessionStorage.getItem('novelSilksAdminPassword') || '';
+
+      if (sessionPassword) {
+        state.password = sessionPassword;
+        $('passwordInput').value = sessionPassword;
+      }
+    </script>
+  </body>
+</html>

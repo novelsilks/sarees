@@ -1,41 +1,43 @@
 import { useEffect, useState } from 'react';
+import { products as fallbackProducts } from './data/products';
 
 const slides = [
   {
-    image:
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
+    type: 'video',
+    video: '/products/hero-boutique-video.mp4',
+    poster: '/products/hero-green-yellow.jpeg',
     eyebrow: 'Bridal Grandeur',
     title: 'Woven heritage for every unforgettable celebration.',
     copy:
       'Explore festive silks, bridal heirlooms, and elegant sarees designed to feel timeless, graceful, and proudly Indian.',
   },
   {
-    image:
-      'https://images.unsplash.com/photo-1610041321327-b794da1f8f31?auto=format&fit=crop&w=1600&q=80',
+    type: 'image',
+    image: '/products/hero-yellow-detail.jpeg',
     eyebrow: 'Festive Silks',
     title: 'Classic drapes with a rich and modern boutique presence.',
     copy:
       'From temple borders to zari highlights, each saree is selected to bring warmth, color, and occasion-ready beauty.',
   },
   {
-    image:
-      'https://images.unsplash.com/photo-1621786030484-4c855eed6974?auto=format&fit=crop&w=1600&q=80',
+    type: 'image',
+    image: '/products/hero-blue-detail.jpeg',
     eyebrow: 'Everyday Elegance',
     title: 'Luxury sarees curated with softness, light, and authenticity.',
     copy:
       'Discover effortless silks and statement weaves for weddings, gifting, gatherings, and treasured family moments.',
   },
   {
-    image:
-      'https://images.unsplash.com/photo-1583391733981-8491d84f0c55?auto=format&fit=crop&w=1600&q=80',
+    type: 'image',
+    image: '/products/about-ivory-black.jpeg',
     eyebrow: 'Signature Weaves',
     title: 'A thoughtful collection shaped by craftsmanship and detail.',
     copy:
       'Novel Silks brings together refined textures, striking palettes, and boutique styling for women who love tradition.',
   },
   {
-    image:
-      'https://images.unsplash.com/photo-1596844720739-9b2d94e7d27d?auto=format&fit=crop&w=1600&q=80',
+    type: 'image',
+    image: '/products/blog-royal-blue.jpeg',
     eyebrow: 'Occasion Edit',
     title: 'Celebrate every ritual in silks that feel special from the first glance.',
     copy:
@@ -49,8 +51,7 @@ const categories = [
     name: 'Bridal Kancheepuram',
     aliases: ['bridal kanchipuram', 'bridal kanjeevaram', 'bridal saree'],
     note: 'Regal bridal and festive weaves',
-    image:
-      'https://images.unsplash.com/photo-1621784563330-caee0b138a00?auto=format&fit=crop&w=900&q=80',
+    image: '/products/hero-green-yellow.jpeg',
   },
   {
     id: 'banarasi',
@@ -65,59 +66,21 @@ const categories = [
       'handloom saree',
     ],
     note: 'Rich zari and heritage detailing',
-    image:
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80',
+    image: '/products/blog-royal-blue.jpeg',
   },
   {
     id: 'soft-silk',
     name: 'Kanchi Cotton',
     aliases: ['cotton saree', 'kanchi cotton saree'],
     note: 'Light, graceful, celebration ready',
-    image:
-      'https://images.unsplash.com/photo-1617019114583-affb34d1b3cd?auto=format&fit=crop&w=900&q=80',
+    image: '/products/hero-blue-detail.jpeg',
   },
   {
     id: 'organza',
     name: 'Others Fabrics',
     aliases: ['other fabrics', 'fabric saree'],
     note: 'Fresh florals and airy elegance',
-    image:
-      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80',
-  },
-];
-
-const products = [
-  {
-    id: 7,
-    category: 'banarasi',
-    name: 'Handloom Kanjeevaram Zero Zari Kai Korvai Saree',
-    price: 'Rs. 26,200',
-    image: '/products/kai-korvai-1.jpeg',
-    tag: 'Handloom Heritage',
-    searchTerms: [
-      'kanchipuram',
-      'kanjeevaram',
-      'kanjivaram',
-      'saree',
-      'sarees',
-      'kai korvai',
-      'zero zari',
-      'handloom',
-      'silk saree',
-    ],
-    description:
-      'This saree brings together the elegance of a subtle checked body with a richly woven pallu that tells a story in stripes, motifs, and heritage textures. The contrast is intentional - minimal in the drape, expressive in the fall. The pallu carries intricate temple-inspired borders, geometric bands, and traditional motifs, woven in earthy tones of mustard, rust, green, and black - a palette deeply rooted in Indian handloom identity. Finished with classic tassels, every inch reflects the precision of loom craftsmanship.',
-    gallery: [
-      '/products/kai-korvai-1.jpeg',
-      '/products/kai-korvai-2.jpeg',
-      '/products/kai-korvai-3.jpeg',
-      '/products/kai-korvai-4.jpeg',
-      '/products/kai-korvai-5.jpeg',
-      '/products/kai-korvai-6.jpeg',
-      '/products/kai-korvai-7.jpeg',
-      '/products/kai-korvai-8.jpeg',
-      '/products/kai-korvai-9.jpeg',
-    ],
+    image: '/products/about-ivory-black.jpeg',
   },
 ];
 
@@ -136,66 +99,51 @@ const reviews = [
   },
 ];
 
-const aboutImages = [
-  'https://images.unsplash.com/photo-1610041321327-b794da1f8f31?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1621786030484-4c855eed6974?auto=format&fit=crop&w=900&q=80',
-];
+const aboutImages = ['/products/about-ivory-black.jpeg', '/products/blog-gold-closeup.jpeg'];
 
 const blogPosts = [
   {
     title: 'How To Choose The Perfect Bridal Kancheepuram Saree',
     category: 'Bridal Guide',
-    image:
-      'https://images.unsplash.com/photo-1621784563330-caee0b138a00?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hero-green-yellow.jpeg',
     excerpt:
       'A bridal saree is more than attire. It becomes part of family memory. Discover how color, zari richness, and drape weight help create the perfect ceremonial presence.',
   },
   {
     title: 'Why Kanchi Cotton Is A Timeless Choice For Elegant Daywear',
     category: 'Fabric Story',
-    image:
-      'https://images.unsplash.com/photo-1617019114583-affb34d1b3cd?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hero-blue-detail.jpeg',
     excerpt:
       'Light, breathable, and beautifully graceful, Kanchi cotton sarees balance comfort with tradition, making them ideal for festive mornings, poojas, and intimate gatherings.',
   },
   {
     title: 'Styling Heritage Sarees With A Modern Luxury Finish',
     category: 'Style Journal',
-    image:
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/blog-royal-blue.jpeg',
     excerpt:
       'From heirloom drapes to statement blouses and jewelry pairings, learn how to elevate traditional weaves with a polished boutique sensibility.',
   },
 ];
 
-const serviceOptions = [
-  { id: 'pico', label: 'Pico & Falls', price: 200 },
-  { id: 'blouse', label: 'Blouse Stitching', price: 1500 },
-  { id: 'tassel', label: 'Tassel', price: 0 },
-];
-
 const formatPrice = (amount) => `Rs. ${amount.toLocaleString('en-IN')}`;
 const parsePrice = (price) => Number(price.replace(/[^0-9]/g, ''));
+const getProductStock = (product) => {
+  const stock = Number(product?.stock ?? 2);
+  return Number.isFinite(stock) ? Math.max(0, Math.floor(stock)) : 2;
+};
 const enquiryEmail = 'novelsilks@gmail.com';
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+const isLocalWebsite =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const apiBaseUrl = (
+  isLocalWebsite ? 'http://localhost:3001' : import.meta.env.VITE_API_BASE_URL || 'https://sarees-xbnx.onrender.com'
+).replace(/\/$/, '');
 const getApiUrl = (path) => (apiBaseUrl ? `${apiBaseUrl}${path}` : path);
 
-const buildMailtoLink = ({ name, email, phone, enquiryType, message }) => {
-  const subject = encodeURIComponent(`Website enquiry: ${enquiryType || 'General Enquiry'}`);
-  const body = encodeURIComponent(
-    [
-      `Name: ${name || ''}`,
-      `Email: ${email || ''}`,
-      `Phone: ${phone || ''}`,
-      `Enquiry Type: ${enquiryType || ''}`,
-      '',
-      'Message:',
-      message || '',
-    ].join('\n'),
-  );
-
-  return `mailto:${enquiryEmail}?subject=${subject}&body=${body}`;
-};
+const wait = (ms) =>
+  new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
 
 const loadRazorpayScript = () =>
   new Promise((resolve) => {
@@ -211,6 +159,71 @@ const loadRazorpayScript = () =>
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
+
+const pingBackend = async () => {
+  const response = await fetch(getApiUrl('/api/health'), {
+    method: 'GET',
+    cache: 'no-store',
+    mode: 'cors',
+  });
+
+  return response.ok;
+};
+
+const wakeBackend = async ({ timeoutMs = 70000, intervalMs = 3000 } = {}) => {
+  if (!apiBaseUrl) {
+    return true;
+  }
+
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    try {
+      const isAwake = await pingBackend();
+
+      if (isAwake) {
+        return true;
+      }
+    } catch {
+      // Render free instances may reject the first few requests while waking up.
+    }
+
+    if (Date.now() + intervalMs >= deadline) {
+      break;
+    }
+
+    await wait(intervalMs);
+  }
+
+  return false;
+};
+
+const createOrderWithRetry = async (payload) => {
+  let lastError;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      if (attempt > 0) {
+        await wait(3000);
+      }
+
+      const response = await fetch(getApiUrl('/api/create-order'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      return response;
+    } catch (error) {
+      lastError = error;
+      await wakeBackend({ timeoutMs: 20000, intervalMs: 3000 });
+    }
+  }
+
+  throw lastError || new Error('Unable to connect to payment server.');
+};
 
 const policyPages = {
   shipping: {
@@ -306,7 +319,7 @@ const policyPages = {
     eyebrow: 'Store Policies',
     title: 'Terms & Conditions',
     intro:
-      'These terms explain the rules that apply when customers browse the website, place orders, use services, and interact with Noval Silks online.',
+      'These terms explain the rules that apply when customers browse the website, place orders, use services, and interact with Novel Silks online.',
     sections: [
       {
         heading: 'Use Of The Website',
@@ -435,7 +448,6 @@ function App() {
   const [currentHash, setCurrentHash] = useState(window.location.hash || '#home');
   const [activeProductImage, setActiveProductImage] = useState(0);
   const [isCollectionsMenuOpen, setIsCollectionsMenuOpen] = useState(false);
-  const [selectedServiceOption, setSelectedServiceOption] = useState(serviceOptions[0].id);
   const [cartItems, setCartItems] = useState([]);
   const [checkoutForm, setCheckoutForm] = useState({
     fullName: '',
@@ -453,6 +465,7 @@ function App() {
     type: '',
     message: '',
   });
+  const [orderConfirmation, setOrderConfirmation] = useState(null);
   const [contactFormData, setContactFormData] = useState({
     name: '',
     email: '',
@@ -464,6 +477,7 @@ function App() {
     type: '',
     message: '',
   });
+  const [products, setProducts] = useState(fallbackProducts);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -482,6 +496,41 @@ function App() {
     handleHashChange();
 
     return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProducts = async () => {
+      try {
+        const response = await fetch(getApiUrl(`/api/products?ts=${Date.now()}`), {
+          cache: 'no-store',
+          mode: 'cors',
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const nextProducts = await response.json();
+
+        if (isMounted && Array.isArray(nextProducts) && nextProducts.length > 0) {
+          setProducts(nextProducts);
+        }
+      } catch {
+        // The bundled catalogue stays available when the backend is offline.
+      }
+    };
+
+    loadProducts();
+    const refreshTimer = window.setInterval(loadProducts, 30000);
+    window.addEventListener('focus', loadProducts);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadProducts);
+    };
   }, []);
 
   const visibleProducts = products.filter((product) => {
@@ -511,10 +560,30 @@ function App() {
     window.location.hash = hash;
   };
 
-  const handleCollectionSelect = (categoryId, targetHash = '#collections-page') => {
+  const canUseHoverMenu =
+    typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  const openCollectionsMenu = () => {
+    if (canUseHoverMenu) {
+      setIsCollectionsMenuOpen(true);
+    }
+  };
+
+  const closeCollectionsMenu = () => {
+    if (canUseHoverMenu) {
+      setIsCollectionsMenuOpen(false);
+    }
+  };
+
+  const showCategoryProducts = (categoryId, targetHash = '#products') => {
     setSelectedCategory(categoryId);
+    setSearchQuery('');
     setIsCollectionsMenuOpen(false);
     navigateTo(targetHash);
+  };
+
+  const handleCollectionSelect = (categoryId, targetHash = '#collections-page') => {
+    showCategoryProducts(categoryId, targetHash);
   };
 
   const isAboutPage = currentHash === '#about-page';
@@ -523,6 +592,7 @@ function App() {
   const isCollectionsPage = currentHash === '#collections-page';
   const isCartPage = currentHash === '#cart-page';
   const isCheckoutPage = currentHash === '#checkout-page';
+  const isOrderSuccessPage = currentHash === '#order-success';
   const policyHashMatch = currentHash.match(/^#policy-([a-z-]+)$/);
   const activePolicyKey = policyHashMatch ? policyHashMatch[1] : null;
   const activePolicyPage = activePolicyKey ? policyPages[activePolicyKey] : null;
@@ -535,12 +605,45 @@ function App() {
     : [];
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartSubtotal = cartItems.reduce(
-    (sum, item) => sum + (item.basePrice + item.optionPrice) * item.quantity,
+    (sum, item) => sum + item.basePrice * item.quantity,
     0,
   );
   const shippingCharge = cartSubtotal > 0 && cartSubtotal < 4000 ? 250 : 0;
   const paymentCharge = 0;
   const orderTotal = cartSubtotal + shippingCharge + paymentCharge;
+
+  useEffect(() => {
+    const shouldResetScroll =
+      currentHash === '#home' ||
+      currentHash === '#about-page' ||
+      currentHash === '#blog-page' ||
+      currentHash === '#contact-page' ||
+      currentHash === '#collections-page' ||
+      currentHash === '#cart-page' ||
+      currentHash === '#checkout-page' ||
+      currentHash === '#order-success' ||
+      Boolean(activePolicyPage) ||
+      Boolean(activeProduct);
+
+    if (!shouldResetScroll) {
+      return;
+    }
+
+    const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    scrollToTop();
+    const frame = window.requestAnimationFrame(scrollToTop);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentHash, activePolicyPage, activeProduct]);
+
+  useEffect(() => {
+    if (!isCheckoutPage || !apiBaseUrl) {
+      return;
+    }
+
+    wakeBackend({ timeoutMs: 70000, intervalMs: 3000 });
+  }, [isCheckoutPage]);
 
   const serviceHighlights = [
     {
@@ -578,21 +681,25 @@ function App() {
 
   useEffect(() => {
     setActiveProductImage(0);
-    setSelectedServiceOption(serviceOptions[0].id);
   }, [currentHash]);
 
   const addToCart = (product, directCheckout = false) => {
-    const selectedOption =
-      serviceOptions.find((option) => option.id === selectedServiceOption) ?? serviceOptions[0];
+    const stock = getProductStock(product);
+
+    if (stock <= 0) {
+      return;
+    }
 
     setCartItems((current) => {
-      const existingItem = current.find(
-        (item) => item.productId === product.id && item.optionId === selectedOption.id,
-      );
+      const existingItem = current.find((item) => item.productId === product.id);
 
       if (existingItem) {
+        if (existingItem.quantity >= stock) {
+          return current;
+        }
+
         return current.map((item) =>
-          item.productId === product.id && item.optionId === selectedOption.id
+          item.productId === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item,
         );
@@ -601,16 +708,14 @@ function App() {
       return [
         ...current,
         {
-          id: `${product.id}-${selectedOption.id}`,
+          id: `${product.id}`,
           productId: product.id,
           name: product.name,
           image: product.image,
           category: product.category,
           price: product.price,
           basePrice: parsePrice(product.price),
-          optionId: selectedOption.id,
-          optionLabel: selectedOption.label,
-          optionPrice: selectedOption.price,
+          stock,
           quantity: 1,
         },
       ];
@@ -627,7 +732,9 @@ function App() {
 
     setCartItems((current) =>
       current.map((item) =>
-        item.id === itemId ? { ...item, quantity: nextQuantity } : item,
+        item.id === itemId
+          ? { ...item, quantity: Math.min(nextQuantity, getProductStock(item)) }
+          : item,
       ),
     );
   };
@@ -671,6 +778,14 @@ function App() {
     });
 
     try {
+      const backendReady = await wakeBackend({ timeoutMs: 70000, intervalMs: 3000 });
+
+      if (!backendReady) {
+        throw new Error(
+          'The enquiry service is still starting on Render. Please wait a few seconds and try again.',
+        );
+      }
+
       const response = await fetch(getApiUrl('/api/contact'), {
         method: 'POST',
         headers: {
@@ -706,19 +821,13 @@ function App() {
         message: '',
       });
     } catch (error) {
-      const fallbackMailto = buildMailtoLink(contactFormData);
-
       setContactFormStatus({
         type: 'error',
         message:
           error.message === 'Failed to fetch'
-            ? 'The enquiry service is not connected right now. Your mail app will open so you can send this message directly.'
+            ? 'The enquiry service is waking up right now. Please wait a few seconds and try again.'
             : error.message || 'Unable to send your enquiry right now.',
       });
-
-      if (typeof window !== 'undefined') {
-        window.location.href = fallbackMailto;
-      }
     }
   };
 
@@ -755,30 +864,39 @@ function App() {
       message: '',
     });
 
+    setPaymentFeedback({
+      type: 'info',
+      message: 'Preparing secure checkout. If the payment server is waking up, this may take a few seconds.',
+    });
+
     try {
+      const backendReady = await wakeBackend({ timeoutMs: 70000, intervalMs: 3000 });
+
+      if (!backendReady) {
+        throw new Error(
+          'The payment server is still starting on Render. Please wait about a minute and try again.',
+        );
+      }
+
       const scriptLoaded = await loadRazorpayScript();
 
       if (!scriptLoaded) {
         throw new Error('Unable to load Razorpay checkout. Please try again.');
       }
 
-      const orderResponse = await fetch(getApiUrl('/api/create-order'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const createOrderPayload = {
+        amount: orderTotal * 100,
+        currency: 'INR',
+        receipt: `novel-${Date.now()}`,
+        notes: {
+          customerName: checkoutForm.fullName,
+          customerPhone: checkoutForm.phone,
+          preferredPaymentMethod: paymentMethod,
+          productName: cartItems.map((item) => item.name).join(', '),
         },
-        body: JSON.stringify({
-          amount: orderTotal * 100,
-          currency: 'INR',
-          receipt: `noval-${Date.now()}`,
-          notes: {
-            customerName: checkoutForm.fullName,
-            customerPhone: checkoutForm.phone,
-            preferredPaymentMethod: paymentMethod,
-            productName: cartItems.map((item) => item.name).join(', '),
-          },
-        }),
-      });
+      };
+
+      const orderResponse = await createOrderWithRetry(createOrderPayload);
 
       const orderData = await orderResponse.json();
 
@@ -786,17 +904,17 @@ function App() {
         throw new Error(orderData.error || 'Unable to create payment order.');
       }
 
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      const razorpayKey = orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
 
       if (!razorpayKey) {
-        throw new Error('Razorpay Key ID is missing. Add it to your environment settings.');
+        throw new Error('Razorpay Key ID is missing on the payment server.');
       }
 
-      const razorpayInstance = new window.Razorpay({
-        key: razorpayKey,
+        const razorpayInstance = new window.Razorpay({
+          key: razorpayKey,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Noval Silks',
+        name: 'Novel Silks',
         description: 'Premium saree order',
         image: '/noval-silks-logo.png',
         order_id: orderData.id,
@@ -811,31 +929,67 @@ function App() {
         theme: {
           color: '#8f2032',
         },
-        handler: async (response) => {
-          try {
-            const verifyResponse = await fetch(getApiUrl('/api/verify-payment'), {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(response),
-            });
+          handler: async (response) => {
+            try {
+              const orderSummaryItems = cartItems.map((item) => ({
+                productId: item.productId,
+                name: item.name,
+                quantity: item.quantity,
+                price: formatPrice(item.basePrice * item.quantity),
+                unitPrice: formatPrice(item.basePrice),
+                category: categories.find((category) => category.id === item.category)?.name || item.category,
+                lineTotal: item.basePrice * item.quantity,
+              }));
 
-            const verifyData = await verifyResponse.json();
+              const verifyResponse = await fetch(getApiUrl('/api/verify-payment'), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  ...response,
+                  customer: checkoutForm,
+                  items: orderSummaryItems,
+                  amount: formatPrice(orderTotal),
+                  paymentMethod,
+                }),
+              });
 
-            if (!verifyResponse.ok || !verifyData.verified) {
-              throw new Error(verifyData.error || 'Payment verification failed.');
-            }
+              const verifyData = await verifyResponse.json();
 
-            setCartItems([]);
-            setPaymentFeedback({
-              type: 'success',
-              message: `Payment successful. Payment ID: ${response.razorpay_payment_id}`,
-            });
-            navigateTo('#home');
-          } catch (error) {
-            setPaymentFeedback({
-              type: 'error',
+              if (!verifyResponse.ok || !verifyData.verified) {
+                throw new Error(verifyData.error || 'Payment verification failed.');
+              }
+
+              setOrderConfirmation({
+                orderReference: verifyData.orderReference,
+                paymentId: response.razorpay_payment_id,
+                amountPaid: formatPrice(orderTotal),
+                customerName: checkoutForm.fullName,
+                email: checkoutForm.email,
+                items: orderSummaryItems,
+                emailWarning: verifyData.emailWarning || '',
+                sheetsWarning: verifyData.sheetsWarning || '',
+              });
+              setCartItems([]);
+              setCheckoutForm({
+                fullName: '',
+                email: '',
+                phone: '',
+                address: '',
+                city: '',
+                state: '',
+                pincode: '',
+                note: '',
+              });
+              setPaymentFeedback({
+                type: 'success',
+                message: verifyData.emailWarning || `Payment successful. Payment ID: ${response.razorpay_payment_id}`,
+              });
+              navigateTo('#order-success');
+            } catch (error) {
+              setPaymentFeedback({
+                type: 'error',
               message: error.message || 'Payment verification failed.',
             });
           } finally {
@@ -866,7 +1020,10 @@ function App() {
     } catch (error) {
       setPaymentFeedback({
         type: 'error',
-        message: error.message || 'Payment could not be started.',
+        message:
+          error.message === 'Failed to fetch'
+            ? 'The payment server is still waking up or unreachable. Please wait a few seconds and try again.'
+            : error.message || 'Payment could not be started.',
       });
       setIsPaymentProcessing(false);
       return;
@@ -881,10 +1038,10 @@ function App() {
 
       <header className="site-header">
         <div className="header-inner">
-          <a href="#home" className="brand-lockup" aria-label="Noval Silks home">
-            <img src="/noval-silks-logo.png" alt="Noval Silks peacock logo" className="site-logo" />
+          <a href="#home" className="brand-lockup" aria-label="Novel Silks home">
+            <img src="/noval-silks-logo.png" alt="Novel Silks peacock logo" className="site-logo" />
             <div className="brand-copy">
-              <span className="brand-name">NOVAL SILKS</span>
+              <span className="brand-name">NOVEL SILKS</span>
               <span className="brand-line">WOVEN HERITAGE . WORN WITH PRIDE</span>
             </div>
           </a>
@@ -901,8 +1058,8 @@ function App() {
             <a href="#home">Home</a>
             <div
               className="nav-dropdown"
-              onMouseEnter={() => setIsCollectionsMenuOpen(true)}
-              onMouseLeave={() => setIsCollectionsMenuOpen(false)}
+              onMouseEnter={openCollectionsMenu}
+              onMouseLeave={closeCollectionsMenu}
             >
               <button
                 type="button"
@@ -977,25 +1134,15 @@ function App() {
                   </p>
                   <h1>{activeProduct.name}</h1>
                   <strong className="product-page-price">{activeProduct.price}</strong>
-
-                  <div className="product-options-box">
-                    <p className="product-options-title">Choose Your Product Options</p>
-                    {serviceOptions.map((option) => (
-                      <label key={option.id}>
-                        <input
-                          type="radio"
-                          name="service"
-                          checked={selectedServiceOption === option.id}
-                          onChange={() => setSelectedServiceOption(option.id)}
-                        />
-                        {option.label} ({option.price === 0 ? 'Free' : `INR ${option.price}`})
-                      </label>
-                    ))}
-                  </div>
+                  <span className="product-stock-pill">
+                    {getProductStock(activeProduct) > 0
+                      ? `Stock available: ${getProductStock(activeProduct)}`
+                      : 'Out of stock'}
+                  </span>
 
                   <div className="product-page-actions">
-                    <button type="button" className="buy-btn" onClick={() => addToCart(activeProduct, true)}>Buy it now</button>
-                    <button type="button" className="cart-btn" onClick={() => addToCart(activeProduct)}>Add to Cart</button>
+                    <button type="button" className="buy-btn" onClick={() => addToCart(activeProduct, true)} disabled={getProductStock(activeProduct) <= 0}>Buy it now</button>
+                    <button type="button" className="cart-btn" onClick={() => addToCart(activeProduct)} disabled={getProductStock(activeProduct) <= 0}>Add to Cart</button>
                   </div>
 
                   <p className="product-page-note">
@@ -1024,22 +1171,6 @@ function App() {
                       <summary>Product Detail</summary>
                       <p>{activeProduct.description}</p>
                     </details>
-                    <details>
-                      <summary>Specification</summary>
-                      <p>Premium weave, boutique finish, occasion-ready styling, and carefully curated craftsmanship.</p>
-                    </details>
-                    <details>
-                      <summary>Wash Care</summary>
-                      <p>Dry clean recommended to preserve silk texture, zari finish, and richness of color.</p>
-                    </details>
-                    <details>
-                      <summary>Delivery Shipping</summary>
-                      <p>Dispatch timelines vary by finishing options and availability. Boutique guidance available on request.</p>
-                    </details>
-                    <details>
-                      <summary>Note</summary>
-                      <p>Color appearance may slightly vary depending on device display and natural weave characteristics.</p>
-                    </details>
                   </div>
                 </div>
               </div>
@@ -1063,9 +1194,13 @@ function App() {
                           {categories.find((category) => category.id === product.category)?.name}
                         </p>
                         <h3>{product.name}</h3>
+                        <span className="product-stock">Stock: {getProductStock(product)}</span>
                         <div className="product-meta">
                           <strong>{product.price}</strong>
-                          <button type="button" onClick={() => navigateTo(`#product-${product.id}`)}>View Details</button>
+                          <div className="product-card-actions">
+                            <button type="button" className="product-card-buy-btn" onClick={() => addToCart(product, true)} disabled={getProductStock(product) <= 0}>Buy Now</button>
+                            <button type="button" onClick={() => navigateTo(`#product-${product.id}`)}>View Details</button>
+                          </div>
                         </div>
                       </div>
                     </article>
@@ -1106,16 +1241,14 @@ function App() {
                             {categories.find((category) => category.id === item.category)?.name}
                           </p>
                           <h2>{item.name}</h2>
-                          <p className="cart-item-option">
-                            {item.optionLabel} {item.optionPrice > 0 ? `(+ ${formatPrice(item.optionPrice)})` : '(Included)'}
-                          </p>
-                          <strong>{formatPrice(item.basePrice + item.optionPrice)}</strong>
+                          <strong>{formatPrice(item.basePrice)}</strong>
+                          <p className="cart-item-option">Stock available: {item.stock}</p>
                         </div>
                         <div className="cart-item-controls">
                           <div className="quantity-control">
                             <button type="button" onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>-</button>
                             <span>{item.quantity}</span>
-                            <button type="button" onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>+</button>
+                            <button type="button" onClick={() => updateCartQuantity(item.id, item.quantity + 1)} disabled={item.quantity >= item.stock}>+</button>
                           </div>
                           <button type="button" className="remove-item-btn" onClick={() => removeCartItem(item.id)}>
                             Remove
@@ -1156,7 +1289,7 @@ function App() {
             </section>
           </>
         ) : isCheckoutPage ? (
-          <>
+            <>
             <section className="checkout-page-hero" id="checkout-page">
               <div className="checkout-page-copy">
                 <p className="eyebrow">Secure Checkout</p>
@@ -1228,7 +1361,7 @@ function App() {
                           <span>{item.optionLabel}</span>
                           <span>Qty {item.quantity}</span>
                         </div>
-                        <strong>{formatPrice((item.basePrice + item.optionPrice) * item.quantity)}</strong>
+                        <strong>{formatPrice(item.basePrice * item.quantity)}</strong>
                       </div>
                     ))}
                   </div>
@@ -1266,9 +1399,86 @@ function App() {
                   </button>
                 </aside>
               </div>
-            </section>
-          </>
-        ) : activePolicyPage ? (
+              </section>
+            </>
+          ) : isOrderSuccessPage ? (
+            <>
+              <section className="checkout-page-hero" id="order-success">
+                <div className="checkout-page-copy">
+                  <p className="eyebrow">Order Confirmed</p>
+                  <h1>Your order has been placed successfully.</h1>
+                  <span>
+                    We have received your payment and sent the order details to both the customer email and the shop
+                    owner email.
+                  </span>
+                </div>
+              </section>
+
+              <section className="checkout-page-section">
+                <div className="checkout-page-grid">
+                  <div className="checkout-form-stack">
+                    <div className="checkout-panel">
+                      <p className="eyebrow">Confirmation Details</p>
+                      <div className="success-summary">
+                        {orderConfirmation?.emailWarning ? (
+                          <p className="form-status error">{orderConfirmation.emailWarning}</p>
+                        ) : null}
+                        {orderConfirmation?.sheetsWarning ? (
+                          <p className="form-status error">{orderConfirmation.sheetsWarning}</p>
+                        ) : null}
+                        <div className="summary-row">
+                          <span>Order ID</span>
+                          <strong>{orderConfirmation?.orderReference || 'Generated after payment'}</strong>
+                        </div>
+                        <div className="summary-row">
+                          <span>Payment ID</span>
+                          <strong>{orderConfirmation?.paymentId || '-'}</strong>
+                        </div>
+                        <div className="summary-row">
+                          <span>Customer</span>
+                          <strong>{orderConfirmation?.customerName || '-'}</strong>
+                        </div>
+                        <div className="summary-row">
+                          <span>Confirmation Email</span>
+                          <strong>{orderConfirmation?.email || '-'}</strong>
+                        </div>
+                        <div className="summary-row total">
+                          <span>Amount Paid</span>
+                          <strong>{orderConfirmation?.amountPaid || formatPrice(orderTotal)}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <aside className="checkout-summary-card">
+                    <p className="eyebrow">Order Summary</p>
+                    <div className="checkout-order-list">
+                      {(orderConfirmation?.items || []).map((item) => (
+                        <div className="checkout-order-item" key={`${item.productId}-${item.name}`}>
+                          <div>
+                            <strong>{item.name}</strong>
+                            <span>{item.category}</span>
+                            <span>Qty {item.quantity}</span>
+                          </div>
+                          <strong>{item.price}</strong>
+                        </div>
+                      ))}
+                    </div>
+                    <button type="button" className="buy-btn checkout-btn" onClick={() => navigateTo('#home')}>
+                      Continue Shopping
+                    </button>
+                    <button
+                      type="button"
+                      className="cart-btn continue-btn"
+                      onClick={() => navigateTo('#collections-page')}
+                    >
+                      View Collections
+                    </button>
+                  </aside>
+                </div>
+              </section>
+            </>
+          ) : activePolicyPage ? (
           <>
             <section className="policy-page-hero" id={`policy-${activePolicyKey}`}>
               <div className="policy-page-copy">
@@ -1324,15 +1534,15 @@ function App() {
           <>
             <section className="about-page-hero" id="about-page">
               <div className="about-page-copy">
-                <p className="eyebrow">About Noval Silks</p>
+                <p className="eyebrow">About Novel Silks</p>
                 <h1>Celebrating heritage drapes with a boutique sense of luxury.</h1>
                 <span>
-                  Noval Silks is imagined as a destination for timeless sarees, premium craftsmanship,
+                  Novel Silks is imagined as a destination for timeless sarees, premium craftsmanship,
                   and a shopping experience shaped by grace, warmth, and Indian tradition.
                 </span>
               </div>
               <div className="about-page-image-wrap">
-                <img src={aboutImages[0]} alt="Noval Silks heritage saree collection" className="about-page-image" />
+                <img src={aboutImages[0]} alt="Novel Silks heritage saree collection" className="about-page-image" />
               </div>
             </section>
 
@@ -1342,7 +1552,7 @@ function App() {
                   <p className="eyebrow">Our Story</p>
                   <h2>A premium saree house inspired by artistry, rituals, and celebration.</h2>
                   <p>
-                    Noval Silks brings together the romance of silk, the beauty of zari, and the deep
+                    Novel Silks brings together the romance of silk, the beauty of zari, and the deep
                     emotional value of traditional drapes. Every saree is chosen to feel worthy of weddings,
                     festive gatherings, gifting moments, and the family occasions that stay in memory.
                   </p>
@@ -1370,7 +1580,7 @@ function App() {
 
             <section className="about-values-section">
               <div className="section-heading centered">
-                <p className="eyebrow">Why Noval Silks</p>
+                <p className="eyebrow">Why Novel Silks</p>
                 <h2>Designed for women who love tradition with a polished, luxury finish.</h2>
               </div>
               <div className="about-values-grid">
@@ -1393,7 +1603,7 @@ function App() {
           <>
             <section className="blog-page-hero" id="blog-page">
               <div className="blog-page-copy">
-                <p className="eyebrow">Noval Silks Journal</p>
+                <p className="eyebrow">Novel Silks Journal</p>
                 <h1>Stories, styling notes, and saree inspirations with a luxury touch.</h1>
                 <span>
                   Explore curated reads on bridal sarees, timeless fabrics, and elegant ways to wear
@@ -1424,7 +1634,7 @@ function App() {
           <>
             <section className="contact-page-hero" id="contact-page">
               <div className="contact-page-copy">
-                <p className="eyebrow">Contact Noval Silks</p>
+                <p className="eyebrow">Contact Novel Silks</p>
                 <h1>We would love to help you find the perfect saree for your next special occasion.</h1>
                 <span>
                   Reach out for bridal selections, boutique guidance, collection details, or personalized
@@ -1522,7 +1732,7 @@ function App() {
             <section className="collections-page-hero" id="collections-page">
               <div className="collections-page-copy">
                 <p className="eyebrow">All Collections</p>
-                <h1>Browse every Noval Silks selection in one refined collection page.</h1>
+                <h1>Browse every Novel Silks selection in one refined collection page.</h1>
                 <span>
                   Discover bridal drapes, elegant festive weaves, lighter cottons, and statement occasion sarees curated with a premium boutique sensibility.
                 </span>
@@ -1566,9 +1776,13 @@ function App() {
                         {categories.find((category) => category.id === product.category)?.name}
                       </p>
                       <h3>{product.name}</h3>
+                      <span className="product-stock">Stock: {getProductStock(product)}</span>
                       <div className="product-meta">
                         <strong>{product.price}</strong>
-                        <button type="button" onClick={() => navigateTo(`#product-${product.id}`)}>View Details</button>
+                        <div className="product-card-actions">
+                          <button type="button" className="product-card-buy-btn" onClick={() => addToCart(product, true)} disabled={getProductStock(product) <= 0}>Buy Now</button>
+                          <button type="button" onClick={() => navigateTo(`#product-${product.id}`)}>View Details</button>
+                        </div>
                       </div>
                     </div>
                   </article>
@@ -1584,10 +1798,29 @@ function App() {
                   <article
                     key={slide.title}
                     className={`slide ${index === activeSlide ? 'is-active' : ''}`}
-                    style={{
-                      backgroundImage: `linear-gradient(rgba(255, 252, 247, 0.06), rgba(88, 41, 24, 0.18)), url(${slide.image})`,
-                    }}
-                  />
+                    style={
+                      slide.type === 'image'
+                        ? {
+                            backgroundImage: `linear-gradient(rgba(255, 252, 247, 0.06), rgba(88, 41, 24, 0.18)), url(${slide.image})`,
+                          }
+                        : undefined
+                    }
+                  >
+                    {slide.type === 'video' ? (
+                      <>
+                        <video
+                          className="slide-video"
+                          src={slide.video}
+                          poster={slide.poster}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                        />
+                        <div className="slide-video-overlay" />
+                      </>
+                    ) : null}
+                  </article>
                 ))}
 
                 <div className="slider-dots" aria-label="Slide controls">
@@ -1645,7 +1878,7 @@ function App() {
                     type="button"
                     key={category.id}
                     className={selectedCategory === category.id ? 'category-card active' : 'category-card'}
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => showCategoryProducts(category.id, '#collections-page')}
                   >
                     <img src={category.image} alt={category.name} />
                     <div className="category-card-copy">
@@ -1653,61 +1886,6 @@ function App() {
                       <span>{category.note}</span>
                     </div>
                   </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="products-section" id="products">
-              <div className="section-heading centered">
-                <p className="eyebrow">Featured Products</p>
-                <h2>
-                  {selectedCategory === 'all'
-                    ? 'Curated sarees for festive elegance.'
-                    : `Showing ${categories.find((category) => category.id === selectedCategory)?.name}`}
-                </h2>
-              </div>
-              <div className="filter-row">
-                <button
-                  type="button"
-                  className={selectedCategory === 'all' ? 'filter-chip active' : 'filter-chip'}
-                  onClick={() => setSelectedCategory('all')}
-                >
-                  All
-                </button>
-                {categories.map((category) => (
-                  <button
-                    type="button"
-                    key={category.id}
-                    className={selectedCategory === category.id ? 'filter-chip active' : 'filter-chip'}
-                    onClick={() => setSelectedCategory(category.id)}
-                  >
-                    {category.name}
-                  </button>
-                ))}
-              </div>
-              {visibleProducts.length === 0 ? (
-                <div className="empty-state">
-                  <p>No products found for "{searchQuery}". Try another search.</p>
-                </div>
-              ) : null}
-              <div className="product-grid">
-                {visibleProducts.map((product) => (
-                  <article className="product-card" key={product.id}>
-                    <div className="product-image-wrap">
-                      <img src={product.image} alt={product.name} />
-                      <span className="product-tag">{product.tag}</span>
-                    </div>
-                    <div className="product-content">
-                      <p className="product-category">
-                        {categories.find((category) => category.id === product.category)?.name}
-                      </p>
-                      <h3>{product.name}</h3>
-                      <div className="product-meta">
-                        <strong>{product.price}</strong>
-                        <button type="button" onClick={() => navigateTo(`#product-${product.id}`)}>View Details</button>
-                      </div>
-                    </div>
-                  </article>
                 ))}
               </div>
             </section>
@@ -1761,9 +1939,9 @@ function App() {
           </div>
 
           <div className="footer-brand-panel">
-            <img src="/noval-silks-logo.png" alt="Noval Silks peacock logo" className="footer-logo" />
+            <img src="/noval-silks-logo.png" alt="Novel Silks peacock logo" className="footer-logo" />
             <div className="footer-brand-copy">
-              <p className="footer-title">NOVAL SILKS</p>
+              <p className="footer-title">NOVEL SILKS</p>
               <p className="footer-copy">WOVEN HERITAGE . WORN WITH PRIDE</p>
             </div>
             <div className="footer-contact-lines">
@@ -1806,7 +1984,13 @@ function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>Copyright © 2026 Noval Silks. All Rights Reserved.</p>
+          <p>
+            Designed And Developed By{' '}
+            <a href="https://www.strixova.com" target="_blank" rel="noreferrer">
+              STRIXOVA
+            </a>
+          </p>
+          <p>Copyright © 2026 Novel Silks. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
