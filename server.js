@@ -198,13 +198,29 @@ const syncOrderToGoogleSheets = async (orderRecord) => {
   };
 };
 
-const formatOrderItemsForText = (items = []) =>
-  items
-    .map(
-      (item, index) =>
-        `${index + 1}. ${item.name} | Qty: ${item.quantity} | Price: ${item.price || item.lineTotal || 'NA'}`,
-    )
+const formatOrderItemsForText = (items = []) => {
+  if (!items.length) {
+    return 'No item details were received with this order.';
+  }
+
+  return items
+    .map((item, index) => {
+      const details = [
+        `${index + 1}. ${item.name || 'Unnamed product'}`,
+        `Qty: ${item.quantity || 1}`,
+        `Unit Price: ${item.unitPrice || 'NA'}`,
+        `Total: ${item.price || item.lineTotal || 'NA'}`,
+        `Category: ${item.category || 'NA'}`,
+      ];
+
+      if (item.productId) {
+        details.push(`Product ID: ${item.productId}`);
+      }
+
+      return details.join(' | ');
+    })
     .join('\n');
+};
 
 const sendOrderEmails = async (orderRecord) => {
   if (!gmailUser || !gmailAppPassword) {
@@ -220,61 +236,91 @@ const sendOrderEmails = async (orderRecord) => {
     `${orderRecord.customer.city}, ${orderRecord.customer.state} - ${orderRecord.customer.pincode}`,
   ].join('\n');
 
-  await transporter.sendMail({
-    from: `"Novel Silks Orders" <${gmailUser}>`,
-    to: orderRecord.customer.email,
-    replyTo: gmailUser,
-    subject: `Novel Silks order confirmed - ${orderRecord.orderReference}`,
-    text: [
-      `Dear ${orderRecord.customer.fullName},`,
-      '',
-      'Thank you for shopping with Novel Silks. Your payment has been received successfully.',
-      '',
-      `Order ID: ${orderRecord.orderReference}`,
-      `Payment ID: ${orderRecord.paymentId}`,
-      `Amount Paid: ${orderRecord.orderTotal}`,
-      '',
-      'Items Ordered:',
-      orderLines,
-      '',
-      'Delivery Address:',
-      addressBlock,
-      '',
-      'Our team will contact you shortly with fulfilment updates.',
-      '',
-      'Regards,',
-      'Novel Silks',
-    ].join('\n'),
-  });
+  const result = {
+    customerSent: false,
+    ownerSent: false,
+    warnings: [],
+  };
 
-  await transporter.sendMail({
-    from: `"Novel Silks Orders" <${gmailUser}>`,
-    to: gmailUser,
-    replyTo: orderRecord.customer.email,
-    subject: `New paid order received - ${orderRecord.orderReference}`,
-    text: [
-      'A new paid order has been placed on the website.',
-      '',
-      `Order ID: ${orderRecord.orderReference}`,
-      `Payment ID: ${orderRecord.paymentId}`,
-      `Razorpay Order ID: ${orderRecord.razorpayOrderId}`,
-      `Amount Paid: ${orderRecord.orderTotal}`,
-      '',
-      'Customer Details:',
-      `Name: ${orderRecord.customer.fullName}`,
-      `Email: ${orderRecord.customer.email}`,
-      `Phone: ${orderRecord.customer.phone}`,
-      '',
-      'Delivery Address:',
-      addressBlock,
-      '',
-      'Items Ordered:',
-      orderLines,
-      '',
-      `Preferred Payment Method: ${orderRecord.paymentMethod}`,
-      `Order Note: ${orderRecord.customer.note || 'None'}`,
-    ].join('\n'),
-  });
+  if (orderRecord.customer.email) {
+    try {
+      await transporter.sendMail({
+        from: `"Novel Silks Orders" <${gmailUser}>`,
+        to: orderRecord.customer.email,
+        replyTo: gmailUser,
+        subject: `Novel Silks order confirmed - ${orderRecord.orderReference}`,
+        text: [
+          `Dear ${orderRecord.customer.fullName || 'Customer'},`,
+          '',
+          'Thank you for shopping with Novel Silks. Your payment has been received successfully.',
+          '',
+          `Order ID: ${orderRecord.orderReference}`,
+          `Payment ID: ${orderRecord.paymentId}`,
+          `Amount Paid: ${orderRecord.orderTotal}`,
+          '',
+          'Items Ordered:',
+          orderLines,
+          '',
+          'Delivery Address:',
+          addressBlock,
+          '',
+          'Our team will contact you shortly with fulfilment updates.',
+          '',
+          'Regards,',
+          'Novel Silks',
+        ].join('\n'),
+      });
+      result.customerSent = true;
+    } catch (error) {
+      result.warnings.push(
+        error.code === 'EAUTH' || String(error.response || '').includes('Application-specific password required')
+          ? 'Customer confirmation email failed because Gmail login failed.'
+          : `Customer confirmation email failed: ${error.message || 'Unknown mail error.'}`,
+      );
+    }
+  } else {
+    result.warnings.push('Customer confirmation email was skipped because the customer email address was missing.');
+  }
+
+  try {
+    await transporter.sendMail({
+      from: `"Novel Silks Orders" <${gmailUser}>`,
+      to: gmailUser,
+      replyTo: orderRecord.customer.email || gmailUser,
+      subject: `New paid order received - ${orderRecord.orderReference}`,
+      text: [
+        'A new paid order has been placed on the website.',
+        '',
+        `Order ID: ${orderRecord.orderReference}`,
+        `Payment ID: ${orderRecord.paymentId}`,
+        `Razorpay Order ID: ${orderRecord.razorpayOrderId}`,
+        `Amount Paid: ${orderRecord.orderTotal}`,
+        '',
+        'Customer Details:',
+        `Name: ${orderRecord.customer.fullName || 'NA'}`,
+        `Email: ${orderRecord.customer.email || 'NA'}`,
+        `Phone: ${orderRecord.customer.phone || 'NA'}`,
+        '',
+        'Delivery Address:',
+        addressBlock,
+        '',
+        'Items Ordered:',
+        orderLines,
+        '',
+        `Preferred Payment Method: ${orderRecord.paymentMethod}`,
+        `Order Note: ${orderRecord.customer.note || 'None'}`,
+      ].join('\n'),
+    });
+    result.ownerSent = true;
+  } catch (error) {
+    result.warnings.push(
+      error.code === 'EAUTH' || String(error.response || '').includes('Application-specific password required')
+        ? 'Owner order email failed because Gmail login failed.'
+        : `Owner order email failed: ${error.message || 'Unknown mail error.'}`,
+    );
+  }
+
+  return result;
 };
 
 app.use(
@@ -515,16 +561,19 @@ app.post('/api/verify-payment', async (req, res) => {
       sheetsWarning = sheetError.message || 'Google Sheets sync failed.';
     }
 
-    if (gmailUser && gmailAppPassword && orderRecord.customer.email) {
+    if (gmailUser && gmailAppPassword) {
       try {
-        await sendOrderEmails(orderRecord);
-        emailSent = true;
+        const mailResult = await sendOrderEmails(orderRecord);
+        emailSent = Boolean(mailResult.customerSent && mailResult.ownerSent);
+        emailWarning = mailResult.warnings.join(' ');
       } catch (mailError) {
         emailWarning =
           mailError.code === 'EAUTH' || String(mailError.response || '').includes('Application-specific password required')
             ? 'Payment was successful, but the confirmation email could not be sent because Gmail login failed.'
             : 'Payment was successful, but the confirmation email could not be sent right now.';
       }
+    } else {
+      emailWarning = 'Payment was successful, but email is not configured on the server.';
     }
 
     return res.json({
